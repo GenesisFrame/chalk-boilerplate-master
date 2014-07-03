@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+require 'escort'
+require 'chalk-boilerplate'
+
+# Script for boilerplate generation.
+#
+# Run `boiler -h` to see usage. You can then run `boiler suite -h` to
+# see usage for a subcommand.
+Escort::App.create do |app|
+  app.version Chalk::Boilerplate::VERSION
+  app.summary "Provides boilerplate generators for common needs, such as creating a new gem or script."
+
+  app.command(:script) do |command|
+    command.summary "Generate a Ruby script"
+
+    command.action do |options, arguments|
+      Chalk::Boilerplate::Script.new(options, arguments).execute
+    end
+  end
+
+  app.command(:suite) do |command|
+    command.summary "Generate a test suite skeleton"
+    command.description <<EOF
+This subcommand is largely plumbing (it's called by `boiler gem`), and
+it's rare that you'll have to call it directly. You'll likely only
+want to do so in order to retrofit existing repositories which don't
+yet have a test suite, or where you'd like to restructure how those
+tests are organized.
+EOF
+
+    command.action do |options, arguments|
+      Chalk::Boilerplate::Suite.new(options, arguments).execute
+    end
+  end
+
+  app.command(:gem) do |command|
+    command.summary "Create the boilerplate for a new gem"
+
+    command.action do |options, arguments|
+      Chalk::Boilerplate::Gem.new(options, arguments).execute
+    end
+  end
+
+  app.command(:thrift) do |command|
+    command.summary "Create a brand new Thrift service repo"
+
+    command.action do |options, arguments|
+      Chalk::Boilerplate::Thrift.new(options, arguments).execute
+    end
+  end
+
+  app.action do |options, arguments|
+    raise "Must provide an argument. Run -h for options."
+  end
+end
